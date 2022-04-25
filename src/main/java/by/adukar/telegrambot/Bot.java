@@ -16,6 +16,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -129,14 +131,20 @@ public class Bot extends TelegramLongPollingBot {
             }
         }
         if (isPointNum){
-            int pointNum = Integer.parseInt(message);
-            if(pointNum>=0 && pointNum<=400) {
-                User user = userService.getById(chatId);
-                user.setPointNum(pointNum);
-                userService.save(user);
-                sendMsgWithButtons("В какой предпочтительно сфере вы хотите работать в будущем?",
-                        replyButtons.keyboardMarkupFirstQuestion(), chatId);
-                isPointNum = false;
+            if(isNumeric(message)) {
+                int pointNum = Integer.parseInt(message);
+                if (pointNum >= 0 && pointNum <= 400) {
+                    User user = userService.getById(chatId);
+                    user.setPointNum(pointNum);
+                    userService.save(user);
+                    sendMsgWithButtons("В какой предпочтительно сфере вы хотите работать в будущем?",
+                            replyButtons.keyboardMarkupFirstQuestion(), chatId);
+                    isPointNum = false;
+                } else {
+                    isPointNum = true;
+                    sendMsg("Введите ваше колличество баллов. Ваше колличество " +
+                            "баллов должно быть не менее 0 и неболее 400", chatId);
+                }
             }
             else {
                 isPointNum = true;
@@ -323,6 +331,14 @@ public class Bot extends TelegramLongPollingBot {
 
     private boolean isAlpha(String name) {
         return name.matches("[а-яА-Я ]+");
+    }
+
+    public static boolean isNumeric(String str)
+    {
+        NumberFormat formatter = NumberFormat.getInstance();
+        ParsePosition pos = new ParsePosition(0);
+        formatter.parse(str, pos);
+        return str.length() == pos.getIndex();
     }
 
 
