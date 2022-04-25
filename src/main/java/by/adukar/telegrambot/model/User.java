@@ -1,19 +1,18 @@
 package by.adukar.telegrambot.model;
 
-import lombok.Builder;
 import lombok.Data;
 
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Builder
 @Data
-public class User implements Serializable {
-    private Long chatId;
-    private String firstName;
-    private String lastName;
-    private String userName;
-    private boolean isBlocked;
-    private boolean isAdmin;
-    private boolean isTeacher;
-    private boolean isStudent;
+@Entity
+@Table(name = "user")
+public class User {
+    @Id
+    private String chatId;
+    private String fio;
+    private Integer pointNum;
+    private String faculty;
 }

@@ -1,0 +1,10 @@
+package by.adukar.telegrambot.repo;
+
+import by.adukar.telegrambot.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepo extends JpaRepository<User, Long> {
+    User getByChatId(String chatId);
+}
